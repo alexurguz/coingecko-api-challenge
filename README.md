@@ -18,8 +18,8 @@ This project was implemented using the next tools or libraries:
 
 - Nodejs, Typescript, HapiJs, Mongodb and Docker.
 - For compile and run this project you only will need Docker and Docker compose since everything is encapsulated on a Docker image.
-- The Coingecko api [api](​https://www.coingecko.com/en/api).
-- The documentation endpoints was made with raml.
+- The Coingecko api [api](https://www.coingecko.com/en/api).
+- The documentation endpoints was made with [raml](https://raml.org).
 - The server runs in [http://127.0.0.1:8888](http://127.0.0.1:8888).
 
 
