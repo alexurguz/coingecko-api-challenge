@@ -1,4 +1,4 @@
-import LoadEnv from '../../../helpers/LoadEnv';
+import LoadEnv from '../../../../src/helpers/LoadEnv';
 import { MongoClient, Db } from 'mongodb';
 import Database from '../';
 

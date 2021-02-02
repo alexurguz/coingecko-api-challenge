@@ -8,7 +8,8 @@ import Database from '../../../datasource/database';
 import AuthRepository from '../repository/AuthRepository';
 import AuthUseCase from '../use-case/AuthUseCase';
 import ApiError from '../../../domain/errors/ApiError';
-import Utilities from "../../../helpers/Utitlities";
+import Utilities from '../../../helpers/Utitlities';
+import Constants from '../../../helpers/Constants';
 
 interface AuthValidatorRequestSchema extends ValidatedRequestSchema {
     [ContainerTypes.Body]: {
@@ -39,9 +40,9 @@ export default class AuthRoute implements IRoute {
                 authData.password = Utilities.encryptPassword(authData.password);
                 const result = await useCase.exec(authData);
 
-                const accessToken = JWT.sign(result, LoadEnv.ACCESS_TOKEN_JWT_SECRET, { expiresIn: 60 * 60 });
+                const accessToken = JWT.sign(result, LoadEnv.ACCESS_TOKEN_JWT_SECRET, { expiresIn: Constants.TOKEN_JWT_EXPIRES });
 
-                return res.status(200).json({token: accessToken});
+                return res.status(200).json({token: accessToken, expires: Constants.TOKEN_JWT_EXPIRES});
             } catch (error) {
                 console.error('AuthRoute', error);
                 if (error instanceof ApiError) {

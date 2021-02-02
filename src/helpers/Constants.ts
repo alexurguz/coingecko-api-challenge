@@ -26,4 +26,6 @@ export default class Constants {
     };
 
     public static QUOTE_CURRENCY_ALLOWED: any = ['ars','usd','eur'];
+
+    public static TOKEN_JWT_EXPIRES: number = 60 * 60;
 }
