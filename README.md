@@ -18,7 +18,8 @@ This project was implemented using the next tools or libraries:
 
 - Nodejs, Typescript, HapiJs, Mongodb and Docker.
 - For compile and run this project you only will need Docker and Docker compose since everything is encapsulated on a Docker image.
-- The Coingecko api [api](​https://www.coingecko.com/en/api)
+- The Coingecko api [api](​https://www.coingecko.com/en/api).
+- The documentation endpoints was made with raml.
 - The server runs in [http://127.0.0.1:8888](http://127.0.0.1:8888).
 
 
@@ -127,20 +128,22 @@ These are the instruction for run script that loads into a database all the coin
     npm i
     ```
 
-1. Execute only database service using `docker-compose`:
+2. Execute only database service using `docker-compose`:
 
     ```bash
     docker-compose up database
     ```
 
-1. On another terminal execute server on development mode:
+3. On another terminal execute server on development mode:
 
     ```bash
     npm run dev
     ```
 
-1. (Optional) Execute test:
+4. (Optional) Execute test:
 
     ```bash
     npm test
     ```
+    
+- The data is [‘Powered by CoinGecko API’](https://www.coingecko.com/en/api). 
