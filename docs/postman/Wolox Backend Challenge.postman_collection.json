@@ -1,0 +1,336 @@
+{
+	"info": {
+		"_postman_id": "91e6e0cc-39cf-4bc2-a255-dbbfa2fab55d",
+		"name": "wolox-challenge",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "/user",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Johnatan\",\n    \"lastName\": \"Urbano\",\n    \"userName\": \"jurbanog\",\n    \"password\": \"12345678\",\n    \"favoriteMoney\": \"ars\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/user",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user"
+							]
+						},
+						"description": "Permite realizar la inserción de un usuario, no tiene autenticación, para el caso de este reto\n\n**Parámetros enviados por body**\n**/api/v1/user**\n\nname: \"Johnatan\",\nlastName: \"Urbano\",\nuserName: \"jurbano\",\npassword: \"12345678\", alfanumérica, mínimo 8 caracteres\nfavoriteMoney: \"ars\" valores permitidos ['ars', 'eur', 'usd']"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "coins",
+			"item": [
+				{
+					"name": "/coins",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/v1/coins?limit=20&offset=0&userId=60199f2b69b0e0203dbdbd0c",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"coins"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "20"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								},
+								{
+									"key": "userId",
+									"value": "60199f2b69b0e0203dbdbd0c"
+								}
+							]
+						},
+						"description": "Permite consultar la información de las criptomonedas que han sido cargadas por el proceso de **/api/v1/coins/populate/{userId}** y se hace por medio de páginación ya que hay una cantidad de monedas considerable para poder presentarlas todas en una sola lista.\n\n\n**Parámetros enviados por query**\n**/api/v1/coins**\n\nlimit: limita la cantida de registros que se ven por página\noffset: es el número del registro a partir del cual se realiza la consulta\nuserId: id del usuario registrado y al cual se le quiere mostrar todas las monedas con el precio de su moneda favorita"
+					},
+					"response": []
+				},
+				{
+					"name": "/coins/populate/{userId}",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/coins/populate/60199f2b69b0e0203dbdbd0c",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"coins",
+								"populate",
+								"60199f2b69b0e0203dbdbd0c"
+							]
+						},
+						"description": "Permite guardar las cripto monedas en la base de datos mongo, con el fin de que se pueda persistir inicialmente y después puedan ser consultados los datos, la limitación que tiene es que no se podrán ver los precios del momento, como es el caso de las criptomonedas cuyo precio es muy cambiante.\n\nSe toma la decisión de persistir esta data porque desplegar los datos con la información completa de la criptomoneda requiere de consultar la moneda por id y se tiene una limitación de 100 peticiones por minuto, para el usuario esto no es nada favorable por lo cual se considera un proceso de carga y después de consulta.\n\n**Parámetros enviados por params**\n**/api/v1/coins/populate/6018c453f3e75434a37fe008**\n\nuserId: 6018c453f3e75434a37fe008, es el id que se obtiene como respuesta al momento de crear un usuario\n"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "userCoins",
+			"item": [
+				{
+					"name": "/usercoin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": \"60199f2b69b0e0203dbdbd0c\",\n    \"coinId\": \"aave\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/usercoin",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"usercoin"
+							]
+						},
+						"description": "Permite realizar la inserción de una moneda a un usuario, tiene autenticación y solo el usuario que se envía como **userId** se compara con el usuario del token para permitirle registrar monedas, de lo contrario no podrá realizar la inserción\n\n**Parámetros enviados por body**\n**/api/v1/usercoin**\n\nuserId: \"6fe682120fd0aa45cd2\", id del usuario registrado\ncoinId: \"2key\", id del coin este id se valida directamente por el api de coingecko"
+					},
+					"response": []
+				},
+				{
+					"name": "/usercoin/user/{userId}",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "file",
+							"file": {}
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/usercoin/user/60199f2b69b0e0203dbdbd0c",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"usercoin",
+								"user",
+								"60199f2b69b0e0203dbdbd0c"
+							]
+						},
+						"description": "Permite consultar las criptomonedas que tiene asociadas el usuario, requiere autenticación y verifica que el usuario que se envía como parámetro sea el mismo usuario enviado por el token\n\n**Parámetros enviados por params**\n**/usercoin/user/6018c453f3e75434a37fe008**\n\nuserId: 6018c453f3e75434a37fe008, es el id que se obtiene como respuesta al momento de crear un usuario\n"
+					},
+					"response": []
+				},
+				{
+					"name": "/usercoin/top",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": \"60199f2b69b0e0203dbdbd0c\",\n    \"order\": \"asc\",\n    \"limit\": 25\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/usercoin/top",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"usercoin",
+								"top"
+							]
+						},
+						"description": "Permite consultar el top de criptomonedas del usuario, es autenticado y valida que el suario que está consutando sea el mismo que se envía por el token\n\n**Parámetros enviados por body**\n**/usercoin/user/6018c453f3e75434a37fe008**\n\nuserId: 6018c453f3e75434a37fe008, es el id que se obtiene como respuesta al momento de crear un usuario\norder: tipo de ordenamiento, permite valores ['asc','desc']\nlimit: permite seleccionar la cantidad de registros del top, mínimo 1 máximo 25"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "/auth",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"token\", jsonData.token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userName\": \"jurbanog\",\n    \"password\": \"12345678\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/auth",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth"
+							]
+						},
+						"description": "Permite al usuario poder autenticarse y obtener el token con el cual puede acceder a los diferentes endpoinst que lo requieran\n\n**Parámetros enviados por body**\n\nuserName: nombre del usuario registrado\npassword: contraseña del usuario"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Shared",
+			"item": [
+				{
+					"name": "/ping",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/v1/ping",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"ping"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	]
+}

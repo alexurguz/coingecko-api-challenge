@@ -1,0 +1,278 @@
+#%RAML 1.0
+title: Challenge Tecnico API
+description: Challenge para candidatos a Backend Developers - Wolox
+mediaType: application/json
+/user:
+  description: Manage user data
+  post:
+    description: Allow insert the user into database.
+    body:
+      application/json:
+        example: |
+          {
+            "name": "Johnatan",
+            "lastName": "Urbano",
+            "userName": "jurbanog",
+            "password": "12345678",
+            "favoriteMoney": "ars"
+          }
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              {
+                "_id": "601981df0ceeef191d0553e4",
+                "name": "Johnatan",
+                "lastName": "Urbano",
+                "userName": "jurbanog",
+                "password": "12345678",
+                "favoriteMoney": "ars"
+              }
+      400:
+          body:
+            application/json:
+              example: |
+                {"statusCode": 400, "error": "Bad Request", "message": "Username already exist jurbanog"}
+/coins:
+  description: Collection of users
+  get:
+    description: Get a list of coins from coingecko with the user currency favorite.
+    headers:
+      authorization: Bearer {{token}}
+    queryParameters:
+      userId:
+        description: "id user registered"
+        required: true
+        type: string
+        example: "6018eb10b526490ce86a9b2e"
+      limit:
+        description: "The number of coin to return. Default: 20. Minimum: 1. Maximum: 50"
+        required: true
+        type: integer
+        minimum: 1
+        maximum: 50
+        default: 20
+        example: "limit=2"
+      offset:
+        description: "The base zero index of the first coin to return. Default: 0. Use with `limit` to get the next set of coins"
+        required: false
+        type: integer
+        minimum: 0
+        default: 0
+        example: "offset=20"
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              {
+                "coins": [
+                    {
+                        "symbol": "zoc",
+                        "name": "01coin",
+                        "price": {
+                            "currency": "ars",
+                            "quote": 0.263555
+                        },
+                        "image": {
+                            "thumb": "https://assets.coingecko.com/coins/images/5720/thumb/F1nTlw9I_400x400.jpg?1547041588",
+                            "small": "https://assets.coingecko.com/coins/images/5720/small/F1nTlw9I_400x400.jpg?1547041588",
+                            "large": "https://assets.coingecko.com/coins/images/5720/large/F1nTlw9I_400x400.jpg?1547041588"
+                        },
+                        "lastUpdateDate": "2021-02-02T15:48:47.469Z"
+                    }
+                ],
+                "limit": 1,
+                "offset": 0,
+                "total": 7,
+                "next": "/api/v1/coins?offset=1&limit=1",
+                "previous": null
+              }
+      400:
+          body:
+            application/json:
+              example: |
+                {"statusCode": 400, "error": "Bad Request", "message": "Coins not found"}
+  /coins/populate/{userId}:
+    description: Populate coins with coingecko data
+    get:
+      description: Loads into a database all the coins from a list of coins from Coingecko's public Web API, this procces can take more that 1 hour because de coingecko api allows only 100 requests by minute.
+      headers:
+        authorization: Bearer {{token}}
+      queryParameters:
+        userId:
+          description: "id user registered"
+          required: true
+          type: string
+          example: "6018eb10b526490ce86a9b2e"
+/auth:
+  description: Collection of auth
+  post:
+    description: Allow authentication for the user and endpoints.
+    body:
+      application/json:
+        example: |
+          {
+            "userName": "jurbano",
+            "password": "12345678"
+          }
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              {
+                "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6......."
+              }
+      400:
+          body:
+            application/json:
+              example: |
+                {"statusCode": 400, "error": "Bad Request", "message": "User not found"}
+/usercoin:
+  description: Collection of usercoins
+  post:
+    description: Allow register coins a user.
+    headers:
+      authorization: Bearer {{token}}
+    body:
+      application/json:
+        example: |
+          {
+            "userId": "6018eb10b526490ce86a9b2e",
+            "coinId": "bitcoin"
+          }
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              {
+                "userId": "6018eb10b526490ce86a9b2e",
+                "coinId": "bitcoin",
+                "_id": "601984080ceeef191d0553e5"
+              }
+      400:
+          body:
+            application/json:
+              example: |
+                {"statusCode": 400, "error": "Bad Request", "message": "Usercoin already exist bitcoin"}
+  /user/{userId}:
+    description: search coins from a user
+    get:
+      description: get coins form user by user id
+      headers:
+        authorization: Bearer {{token}}
+      queryParameters:
+        userId:
+          description: "id user registered"
+          required: true
+          type: string
+          example: "6018eb10b526490ce86a9b2e"
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                [
+                  {
+                    "_id": "6018eb74b526494a176a9b49",
+                    "userId": "6018eb10b526490ce86a9b2e",
+                    "coinId": "2key",
+                    "symbol": "2key",
+                    "ars": 3.17,
+                    "eur": 0.02994119,
+                    "usd": 0.03616094,
+                    "name": "2key.network",
+                    "image": {
+                        "thumb": "https://assets.coingecko.com/coins/images/6090/thumb/2key.png?1591591830",
+                        "small": "https://assets.coingecko.com/coins/images/6090/small/2key.png?1591591830",
+                        "large": "https://assets.coingecko.com/coins/images/6090/large/2key.png?1591591830"
+                    },
+                    "lastUpdateDate": "2021-02-02T05:59:17.811Z"
+                  }
+                ]
+        400:
+            body:
+              application/json:
+                example: |
+                  {"statusCode": 400, "error": "Bad Request", "message": "Coins not found"}
+  /top:
+    description: get top user coins by user
+    post:
+      description: Allow top user coins.
+      headers:
+        authorization: Bearer {{token}}
+      body:
+        application/json:
+          example: |
+            {
+              "userId": "6018eb10b526490ce86a9b2e",
+              "order": "asc",
+              "limit": 25
+            }
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                [
+                  {
+                    "symbol": "zoc",
+                    "ars": 0.267014,
+                    "eur": 0.0025323,
+                    "usd": 0.0030445,
+                    "name": "01coin",
+                    "image": {
+                        "thumb": "https://assets.coingecko.com/coins/images/5720/thumb/F1nTlw9I_400x400.jpg?1547041588",
+                        "small": "https://assets.coingecko.com/coins/images/5720/small/F1nTlw9I_400x400.jpg?1547041588",
+                        "large": "https://assets.coingecko.com/coins/images/5720/large/F1nTlw9I_400x400.jpg?1547041588"
+                    },
+                    "lastUpdateDate": "2021-02-02T16:54:22.844Z"
+                  },
+                  {
+                    "symbol": "2key",
+                    "ars": 3.09,
+                    "eur": 0.02929496,
+                    "usd": 0.03520995,
+                    "name": "2key.network",
+                    "image": {
+                        "thumb": "https://assets.coingecko.com/coins/images/6090/thumb/2key.png?1591591830",
+                        "small": "https://assets.coingecko.com/coins/images/6090/small/2key.png?1591591830",
+                        "large": "https://assets.coingecko.com/coins/images/6090/large/2key.png?1591591830"
+                    },
+                    "lastUpdateDate": "2021-02-02T17:03:44.971Z"
+                  },
+                  {
+                    "symbol": "cusdthalf",
+                    "ars": 475196,
+                    "eur": 4704.57,
+                    "usd": 5735.88,
+                    "name": "0.5X Long Compound USDT Token",
+                    "image": {
+                        "thumb": "https://assets.coingecko.com/coins/images/12023/thumb/683JEXMN_400x400.png?1596694282",
+                        "small": "https://assets.coingecko.com/coins/images/12023/small/683JEXMN_400x400.png?1596694282",
+                        "large": "https://assets.coingecko.com/coins/images/12023/large/683JEXMN_400x400.png?1596694282"
+                    },
+                    "lastUpdateDate": "2020-12-27T05:42:09.730Z"
+                  },
+                  {
+                    "symbol": "btc",
+                    "ars": 3064828,
+                    "eur": 29073,
+                    "usd": 34944,
+                    "name": "Bitcoin",
+                    "image": {
+                        "thumb": "https://assets.coingecko.com/coins/images/1/thumb/bitcoin.png?1547033579",
+                        "small": "https://assets.coingecko.com/coins/images/1/small/bitcoin.png?1547033579",
+                        "large": "https://assets.coingecko.com/coins/images/1/large/bitcoin.png?1547033579"
+                    },
+                    "lastUpdateDate": "2021-02-02T17:03:59.288Z"
+                  }
+              ]
+        400:
+            body:
+              application/json:
+                example: |
+                  {"statusCode": 400,    "error": "Bad Request", "message": "Coins not found"}
